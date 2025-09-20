@@ -55,14 +55,24 @@
         }
         
         .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
         }
         
-        .logo i {
-            margin-right: 10px;
+        .logo-main {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        
+        .logo-sub {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            color: var(--accent);
         }
         
         .nav-links {
@@ -136,6 +146,18 @@
             margin: 0 auto 2rem;
         }
         
+        .hero-slogan {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, var(--accent), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
         /* Features Section */
         .features {
             padding: 5rem 0;
@@ -188,82 +210,163 @@
             margin-bottom: 1rem;
         }
         
-        /* Dashboard Demo */
-        .dashboard {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            margin: 2rem auto;
-            overflow: hidden;
+        /* Multi-Store Section */
+        .multi-store {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 5rem 0;
         }
         
-        .dashboard-header {
+        .store-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+        .store-content {
+            flex: 1;
+            min-width: 300px;
         }
         
-        .stat-card {
-            background: var(--light);
+        .store-visual {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 10px;
             padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         
-        .stat-card h3 {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
+        .store-list {
+            margin-top: 1.5rem;
         }
         
-        .inventory-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 2rem;
-        }
-        
-        .inventory-table th,
-        .inventory-table td {
+        .store-item {
+            display: flex;
+            align-items: center;
             padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
-        .inventory-table th {
-            background-color: var(--light);
+        .store-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+        }
+        
+        .store-info {
+            flex: 1;
+        }
+        
+        .store-name {
             font-weight: 600;
+            margin-bottom: 0.2rem;
         }
         
-        .stock-low {
-            color: var(--danger);
-            font-weight: 600;
+        .store-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--gray);
         }
         
-        .stock-ok {
-            color: var(--accent);
-            font-weight: 600;
+        .stat {
+            display: flex;
+            align-items: center;
         }
         
-        .alert-badge {
-            display: inline-block;
+        .stat i {
+            margin-right: 0.3rem;
+        }
+        
+        .store-status {
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
         }
         
-        .alert-low {
-            background-color: #fee2e2;
-            color: var(--danger);
+        .status-open {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .status-closed {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+        
+        .map-visual {
+            height: 300px;
+            background: #1f2937;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .map-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .map-point::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { width: 20px; height: 20px; opacity: 1; }
+            100% { width: 40px; height: 40px; opacity: 0; }
+        }
+        
+        .store-comparison {
+            margin-top: 1.5rem;
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .comparison-table th {
+            background-color: var(--light);
+            font-weight: 600;
         }
         
         /* Scanner Section */
@@ -392,6 +495,84 @@
             color: var(--gray);
         }
         
+        /* Dashboard Demo */
+        .dashboard {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin: 2rem auto;
+            overflow: hidden;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        
+        .inventory-table th,
+        .inventory-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .inventory-table th {
+            background-color: var(--light);
+            font-weight: 600;
+        }
+        
+        .stock-low {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .stock-ok {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .alert-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .alert-low {
+            background-color: #fee2e2;
+            color: var(--danger);
+        }
+        
         /* CTA Section */
         .cta {
             background: linear-gradient(135deg, var(--secondary), var(--primary));
@@ -409,6 +590,13 @@
             max-width: 700px;
             margin: 0 auto 2rem;
             font-size: 1.2rem;
+        }
+        
+        .cta-slogan {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: white;
         }
         
         /* Footer */
@@ -462,6 +650,14 @@
                 display: none;
             }
             
+            .logo-main {
+                font-size: 1.6rem;
+            }
+            
+            .logo-sub {
+                font-size: 0.7rem;
+            }
+            
             .hero h1 {
                 font-size: 2.5rem;
             }
@@ -470,14 +666,27 @@
                 font-size: 1.2rem;
             }
             
+            .hero-slogan {
+                font-size: 1.8rem;
+            }
+            
             .dashboard-header {
                 flex-direction: column;
                 gap: 1rem;
                 align-items: flex-start;
             }
             
-            .scanner-container {
+            .scanner-container, .store-container {
                 flex-direction: column;
+            }
+            
+            .cta-slogan {
+                font-size: 2rem;
+            }
+            
+            .store-stats {
+                flex-direction: column;
+                gap: 0.3rem;
             }
         }
     </style>
@@ -488,8 +697,8 @@
         <div class="container">
             <nav>
                 <div class="logo">
-                    <i class="fas fa-boxes"></i>
-                    StockMaster Pro
+                    <div class="logo-main">STOCKMASTER</div>
+                    <div class="logo-sub">AUTOMATE.TRACK.THRIVE.</div>
                 </div>
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
@@ -507,7 +716,8 @@
     <section class="hero">
         <div class="container">
             <h1>Automate Your Inventory Management</h1>
-            <p>Real-time tracking, automated reordering, and seamless integration with your sales channels</p>
+            <p>Real-time tracking, automated reordering, and seamless integration with your sales channels across all store locations</p>
+            <div class="hero-slogan">Automate. Track. Thrive.</div>
             <a href="#" class="btn btn-primary">Start Free Trial</a>
         </div>
     </section>
@@ -567,6 +777,114 @@
                     </div>
                     <h3>Analytics & Reporting</h3>
                     <p>Gain insights into sales trends, inventory turnover, and product performance with detailed reports.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Multi-Store Section -->
+    <section class="multi-store">
+        <div class="container">
+            <div class="section-title">
+                <h2>Multi-Store Inventory Management</h2>
+                <p>Manage all your retail locations from a single, centralized dashboard with real-time synchronization</p>
+            </div>
+            
+            <div class="store-container">
+                <div class="store-content">
+                    <h3>Centralized Control for Multiple Locations</h3>
+                    <p>StockMaster Pro enables businesses with multiple retail stores to maintain complete visibility and control over inventory across all locations. Our system provides both a consolidated view of your entire operation and detailed insights for each individual store.</p>
+                    
+                    <div class="store-list">
+                        <div class="store-item">
+                            <div class="store-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="store-info">
+                                <div class="store-name">Downtown Flagship Store</div>
+                                <div class="store-stats">
+                                    <div class="stat"><i class="fas fa-box"></i> 842 products</div>
+                                    <div class="stat"><i class="fas fa-shopping-cart"></i> 42 sales today</div>
+                                </div>
+                            </div>
+                            <div class="store-status status-open">Open</div>
+                        </div>
+                        
+                        <div class="store-item">
+                            <div class="store-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="store-info">
+                                <div class="store-name">Westside Mall Location</div>
+                                <div class="store-stats">
+                                    <div class="stat"><i class="fas fa-box"></i> 756 products</div>
+                                    <div class="stat"><i class="fas fa-shopping-cart"></i> 38 sales today</div>
+                                </div>
+                            </div>
+                            <div class="store-status status-open">Open</div>
+                        </div>
+                        
+                        <div class="store-item">
+                            <div class="store-icon">
+                                <i class="fas fa-store"></i>
+                            </div>
+                            <div class="store-info">
+                                <div class="store-name">Airport Terminal Store</div>
+                                <div class="store-stats">
+                                    <div class="stat"><i class="fas fa-box"></i> 523 products</div>
+                                    <div class="stat"><i class="fas fa-shopping-cart"></i> 27 sales today</div>
+                                </div>
+                            </div>
+                            <div class="store-status status-open">Open</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="store-visual">
+                    <h3>Store Network Overview</h3>
+                    <div class="map-visual">
+                        <div class="map-point" style="top: 30%; left: 25%;"></div>
+                        <div class="map-point" style="top: 60%; left: 45%;"></div>
+                        <div class="map-point" style="top: 75%; left: 70%;"></div>
+                    </div>
+                    
+                    <div class="store-comparison">
+                        <div class="comparison-header">
+                            <h4>Performance Comparison</h4>
+                            <span>Today</span>
+                        </div>
+                        
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Sales</th>
+                                    <th>Inventory</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Downtown</td>
+                                    <td>$3,842</td>
+                                    <td>842/900</td>
+                                    <td><i class="fas fa-arrow-up" style="color: var(--accent);"></i> 12%</td>
+                                </tr>
+                                <tr>
+                                    <td>Westside Mall</td>
+                                    <td>$2,956</td>
+                                    <td>756/800</td>
+                                    <td><i class="fas fa-arrow-up" style="color: var(--accent);"></i> 5%</td>
+                                </tr>
+                                <tr>
+                                    <td>Airport</td>
+                                    <td>$1,873</td>
+                                    <td>523/600</td>
+                                    <td><i class="fas fa-arrow-down" style="color: var(--danger);"></i> 3%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -632,11 +950,11 @@
                 <div class="dashboard-header">
                     <h2>Inventory Overview</h2>
                     <div class="filters">
-                        <select>
-                            <option>All Categories</option>
-                            <option>Electronics</option>
-                            <option>Clothing</option>
-                            <option>Home & Garden</option>
+                        <select id="store-select">
+                            <option value="all">All Stores</option>
+                            <option value="downtown">Downtown Store</option>
+                            <option value="westside">Westside Mall</option>
+                            <option value="airport">Airport Terminal</option>
                         </select>
                     </div>
                 </div>
@@ -727,6 +1045,7 @@
         <div class="container">
             <h2>Ready to Transform Your Inventory Management?</h2>
             <p>Join thousands of businesses that have streamlined their inventory processes with StockMaster Pro</p>
+            <div class="cta-slogan">Automate. Track. Thrive.</div>
             <a href="#" class="btn btn-outline">Get Started Now</a>
         </div>
     </section>
@@ -736,8 +1055,9 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>StockMaster Pro</h3>
+                    <h3>StockMaster</h3>
                     <p>Advanced inventory management solution for businesses of all sizes.</p>
+                    <p style="margin-top: 10px; font-weight: 600;">Automate. Track. Thrive.</p>
                 </div>
                 
                 <div class="footer-section">
@@ -763,7 +1083,7 @@
                 <div class="footer-section">
                     <h3>Contact Us</h3>
                     <ul class="footer-links">
-                        <li><i class="fas fa-envelope"></i> info@stockmasterpro.com</li>
+                        <li><i class="fas fa-envelope"></i> info@stockmaster.com</li>
                         <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
                         <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 100</li>
                     </ul>
@@ -771,7 +1091,7 @@
             </div>
             
             <div class="copyright">
-                <p>&copy; 2023 StockMaster Pro. All rights reserved.</p>
+                <p>&copy; 2023 StockMaster. All rights reserved.</p>
             </div>
         </div>
     </footer>
