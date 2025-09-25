@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StockMaster | Real-Time Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #4f46e5;
+        --accent: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #1f2937;
+        --light: #f9fafb;
+        --gray: #9ca3af;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: var(--dark);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #fff, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .sync-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 1.1rem;
+        margin-top: 15px;
+      }
+
+      .sync-indicator {
+        width: 12px;
+        height: 12px;
+        background: var(--accent);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.7;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .card h3 {
+        color: var(--dark);
+        margin-bottom: 20px;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .live-sales {
+        grid-column: span 2;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .sale-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+        border-radius: 12px;
+        margin-bottom: 10px;
+        border-left: 4px solid var(--accent);
+        animation: slideIn 0.5s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .sale-info {
+        flex: 1;
+      }
+
+      .product-name {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 5px;
+      }
+
+      .sale-details {
+        font-size: 0.9rem;
+        color: var(--gray);
+        display: flex;
+        gap: 15px;
+      }
+
+      .sale-amount {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      .store-tag {
+        background: var(--primary);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: scale(1.05);
+      }
+
+      .stat-number {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        color: var(--gray);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin-top: 20px;
+      }
+
+      .inventory-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .inventory-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin-bottom: 8px;
+        backdrop-filter: blur(5px);
+      }
+
+      .inventory-info {
+        flex: 1;
+      }
+
+      .product-sku {
+        font-size: 0.8rem;
+        color: var(--gray);
+        margin-top: 2px;
+      }
+
+      .stock-level {
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+
+      .stock-high {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+
+      .stock-medium {
+        background: #fef3c7;
+        color: #d97706;
+      }
+
+      .stock-low {
+        background: #fee2e2;
+        color: #ef4444;
+      }
+
+      .controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .btn-primary {
+        background: rgba(37, 99, 235, 0.9);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: rgba(37, 99, 235, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .time-display {
+        text-align: center;
+        color: white;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-grid,
+        .inventory-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .live-sales {
+          grid-column: span 1;
+        }
+
+        .header h1 {
+          font-size: 1.8rem;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1><i class="fas fa-sync-alt"></i> StockMaster Real-Time Dashboard</h1>
+        <p>Connected to all POS systems - Live data streaming</p>
+        <div class="sync-status">
+          <div class="sync-indicator"></div>
+          <span>Real-time sync active</span>
+        </div>
+      </div>
+
+      <div class="time-display">
+        <i class="fas fa-clock"></i> <span id="current-time"></span>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-primary" onclick="toggleSync()">
+          <i class="fas fa-play" id="sync-icon"></i>
+          <span id="sync-text">Pause Sync</span>
+        </button>
+        <button class="btn btn-secondary" onclick="exportData()">
+          <i class="fas fa-download"></i> Export Data
+        </button>
+        <button class="btn btn-secondary" onclick="refreshCharts()">
+          <i class="fas fa-chart-bar"></i> Refresh Charts
+        </button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div
+            class="stat-number"
+            id="total-sales"
+            style="color: var(--accent)"
+          >
+            $0
+          </div>
+          <div class="stat-label">Today's Sales</div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-number"
+            id="total-transactions"
+            style="color: var(--primary)"
+          >
+            0
+          </div>
+          <div class="stat-label">Transactions</div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-number"
+            id="active-stores"
+            style="color: var(--warning)"
+          >
+            3
+          </div>
+          <div class="stat-label">Active Stores</div>
+        </div>
+        <div class="stat-card">
+          <div
+            class="stat-number"
+            id="low-stock-items"
+            style="color: var(--danger)"
+          >
+            0
+          </div>
+          <div class="stat-label">Low Stock Alert</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card live-sales">
+          <h3><i class="fas fa-shopping-cart"></i> Live Sales Feed</h3>
+          <div id="sales-feed"></div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3><i class="fas fa-chart-line"></i> Sales Trend (Hourly)</h3>
+          <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-chart-pie"></i> Sales by Store</h3>
+          <div class="chart-container">
+            <canvas id="storeChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3><i class="fas fa-chart-bar"></i> Top Products Today</h3>
+          <div class="chart-container">
+            <canvas id="productsChart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-boxes"></i> Current Inventory Levels</h3>
+          <div id="inventory-levels"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Global variables
+      let syncActive = true;
+      let salesData = [];
+      let totalSales = 0;
+      let totalTransactions = 0;
+      let lowStockCount = 0;
+
+      // Sample data
+      const stores = ["Downtown Flagship", "Westside Mall", "Airport Terminal"];
+      const products = [
+        {
+          name: "Wireless Headphones",
+          sku: "WH-2023",
+          price: 89.99,
+          stock: 45,
+        },
+        { name: "Bluetooth Speaker", sku: "BS-4567", price: 129.99, stock: 23 },
+        { name: "Cotton T-Shirt", sku: "CT-7890", price: 24.99, stock: 8 },
+        {
+          name: "Gardening Tools Set",
+          sku: "GT-3345",
+          price: 79.99,
+          stock: 15,
+        },
+        { name: "Water Bottle", sku: "WB-9012", price: 19.99, stock: 5 },
+        { name: "Smartphone Case", sku: "SC-1122", price: 34.99, stock: 67 },
+        { name: "Notebook Set", sku: "NB-3344", price: 12.99, stock: 32 },
+        { name: "Coffee Mug", sku: "CM-5566", price: 16.99, stock: 18 },
+      ];
+
+      // Chart instances
+      let salesChart, storeChart, productsChart;
+
+      // Initialize dashboard
+      function init() {
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        if (syncActive) {
+          setInterval(generateSale, 2000); // Generate sale every 2 seconds
+          setInterval(updateInventory, 5000); // Update inventory every 5 seconds
+        }
+
+        initializeCharts();
+        displayInventoryLevels();
+      }
+
+      // Update current time
+      function updateTime() {
+        const now = new Date();
+        document.getElementById("current-time").textContent =
+          now.toLocaleString();
+      }
+
+      // Generate random sale
+      function generateSale() {
+        if (!syncActive) return;
+
+        const store = stores[Math.floor(Math.random() * stores.length)];
+        const product = products[Math.floor(Math.random() * products.length)];
+        const quantity = Math.floor(Math.random() * 3) + 1;
+        const amount = product.price * quantity;
+        const now = new Date();
+
+        const sale = {
+          id: Date.now(),
+          product: product.name,
+          sku: product.sku,
+          store: store,
+          quantity: quantity,
+          amount: amount,
+          timestamp: now,
+        };
+
+        // Update product stock
+        product.stock = Math.max(0, product.stock - quantity);
+
+        salesData.unshift(sale);
+        if (salesData.length > 50) salesData.pop(); // Keep last 50 sales
+
+        totalSales += amount;
+        totalTransactions++;
+
+        displaySale(sale);
+        updateStats();
+        updateCharts();
+      }
+
+      // Display sale in feed
+      function displaySale(sale) {
+        const salesFeed = document.getElementById("sales-feed");
+
+        const saleElement = document.createElement("div");
+        saleElement.className = "sale-item";
+        saleElement.innerHTML = `
+                <div class="sale-info">
+                    <div class="product-name">${sale.product}</div>
+                    <div class="sale-details">
+                        <span><i class="fas fa-store"></i> ${sale.store}</span>
+                        <span><i class="fas fa-clock"></i> ${sale.timestamp.toLocaleTimeString()}</span>
+                        <span><i class="fas fa-calendar"></i> ${sale.timestamp.toLocaleDateString()}</span>
+                        <span>Qty: ${sale.quantity}</span>
+                    </div>
+                </div>
+                <div class="sale-amount">$${sale.amount.toFixed(2)}</div>
+                <div class="store-tag">${sale.store.split(" ")[0]}</div>
+            `;
+
+        salesFeed.insertBefore(saleElement, salesFeed.firstChild);
+
+        // Remove old sales from display
+        if (salesFeed.children.length > 20) {
+          salesFeed.removeChild(salesFeed.lastChild);
+        }
+      }
+
+      // Update statistics
+      function updateStats() {
+        document.getElementById(
+          "total-sales"
+        ).textContent = `$${totalSales.toLocaleString()}`;
+        document.getElementById("total-transactions").textContent =
+          totalTransactions;
+
+        // Count low stock items
+        lowStockCount = products.filter((p) => p.stock <= 10).length;
+        document.getElementById("low-stock-items").textContent = lowStockCount;
+      }
+
+      // Initialize charts
+      function initializeCharts() {
+        // Sales trend chart
+        const salesCtx = document.getElementById("salesChart").getContext("2d");
+        salesChart = new Chart(salesCtx, {
+          type: "line",
+          data: {
+            labels: Array.from({ length: 12 }, (_, i) => `${i + 8}:00`),
+            datasets: [
+              {
+                label: "Sales ($)",
+                data: Array.from(
+                  { length: 12 },
+                  () => Math.floor(Math.random() * 1000) + 500
+                ),
+                borderColor: "#22c55e",
+                backgroundColor: "rgba(34, 197, 94, 0.1)",
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+            },
+            scales: {
+              y: { beginAtZero: true },
+            },
+          },
+        });
+
+        // Store performance chart
+        const storeCtx = document.getElementById("storeChart").getContext("2d");
+        storeChart = new Chart(storeCtx, {
+          type: "doughnut",
+          data: {
+            labels: stores,
+            datasets: [
+              {
+                data: [45, 30, 25],
+                backgroundColor: ["#2563eb", "#4f46e5", "#7c3aed"],
+                borderWidth: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: "bottom" },
+            },
+          },
+        });
+
+        // Top products chart
+        const productsCtx = document
+          .getElementById("productsChart")
+          .getContext("2d");
+        productsChart = new Chart(productsCtx, {
+          type: "bar",
+          data: {
+            labels: products
+              .slice(0, 5)
+              .map((p) => p.name.split(" ").slice(0, 2).join(" ")),
+            datasets: [
+              {
+                label: "Units Sold",
+                data: Array.from(
+                  { length: 5 },
+                  () => Math.floor(Math.random() * 20) + 5
+                ),
+                backgroundColor: "#f59e0b",
+                borderRadius: 5,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+            },
+            scales: {
+              y: { beginAtZero: true },
+            },
+          },
+        });
+      }
+
+      // Update charts with new data
+      function updateCharts() {
+        // Update sales chart with recent data
+        if (salesChart && salesData.length > 0) {
+          const lastHourSales = salesData
+            .filter((sale) => {
+              const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
+              return sale.timestamp > hourAgo;
+            })
+            .reduce((sum, sale) => sum + sale.amount, 0);
+
+          salesChart.data.datasets[0].data.push(lastHourSales);
+          salesChart.data.datasets[0].data.shift();
+          salesChart.update("none");
+        }
+
+        // Update store chart
+        if (storeChart && salesData.length > 0) {
+          const storePerformance = stores.map((store) => {
+            return salesData
+              .filter((sale) => sale.store === store)
+              .reduce((sum, sale) => sum + sale.amount, 0);
+          });
+
+          storeChart.data.datasets[0].data = storePerformance;
+          storeChart.update("none");
+        }
+
+        // Update products chart
+        if (productsChart && salesData.length > 0) {
+          const productSales = {};
+          salesData.forEach((sale) => {
+            productSales[sale.product] =
+              (productSales[sale.product] || 0) + sale.quantity;
+          });
+
+          const topProducts = Object.entries(productSales)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+
+          if (topProducts.length > 0) {
+            productsChart.data.labels = topProducts.map((p) =>
+              p[0].split(" ").slice(0, 2).join(" ")
+            );
+            productsChart.data.datasets[0].data = topProducts.map((p) => p[1]);
+            productsChart.update("none");
+          }
+        }
+      }
+
+      // Display inventory levels
+      function displayInventoryLevels() {
+        const inventoryContainer = document.getElementById("inventory-levels");
+        inventoryContainer.innerHTML = "";
+
+        products.forEach((product) => {
+          const stockClass =
+            product.stock > 20
+              ? "stock-high"
+              : product.stock > 10
+              ? "stock-medium"
+              : "stock-low";
+
+          const inventoryItem = document.createElement("div");
+          inventoryItem.className = "inventory-item";
+          inventoryItem.innerHTML = `
+                    <div class="inventory-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-sku">${product.sku}</div>
+                    </div>
+                    <div class="stock-level ${stockClass}">
+                        ${product.stock} units
+                    </div>
+                `;
+
+          inventoryContainer.appendChild(inventoryItem);
+        });
+      }
+
+      // Update inventory (simulate restocking)
+      function updateInventory() {
+        products.forEach((product) => {
+          // Randomly restock some items
+          if (Math.random() < 0.3 && product.stock < 50) {
+            product.stock += Math.floor(Math.random() * 10) + 5;
+          }
+        });
+
+        displayInventoryLevels();
+      }
+
+      // Control functions
+      function toggleSync() {
+        syncActive = !syncActive;
+        const icon = document.getElementById("sync-icon");
+        const text = document.getElementById("sync-text");
+
+        if (syncActive) {
+          icon.className = "fas fa-pause";
+          text.textContent = "Pause Sync";
+          // Restart intervals
+          setInterval(generateSale, 2000);
+          setInterval(updateInventory, 5000);
+        } else {
+          icon.className = "fas fa-play";
+          text.textContent = "Resume Sync";
+        }
+      }
+
+      function exportData() {
+        const dataToExport = {
+          salesData: salesData,
+          inventoryLevels: products,
+          totalSales: totalSales,
+          totalTransactions: totalTransactions,
+          timestamp: new Date().toISOString(),
+        };
+
+        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `stockmaster-data-${
+          new Date().toISOString().split("T")[0]
+        }.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function refreshCharts() {
+        if (salesChart) salesChart.update();
+        if (storeChart) storeChart.update();
+        if (productsChart) productsChart.update();
+      }
+
+      // Initialize dashboard when page loads
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>
