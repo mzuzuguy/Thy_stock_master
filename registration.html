@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StockMaster Pro | Business Registration</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #4f46e5;
+        --accent: #22c55e;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --dark: #1f2937;
+        --light: #f9fafb;
+        --gray: #9ca3af;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f3f4f6;
+        color: var(--dark);
+        line-height: 1.6;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header Styles */
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 1rem 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .logo-main {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        line-height: 1;
+      }
+
+      .logo-sub {
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-top: 4px;
+        color: var(--accent);
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+
+      .nav-links li {
+        margin-left: 2rem;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: opacity 0.3s;
+      }
+
+      .nav-links a:hover {
+        opacity: 0.8;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: none;
+      }
+
+      .btn-primary {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #16a34a;
+        transform: translateY(-2px);
+      }
+
+      .btn-outline {
+        border: 2px solid white;
+        color: white;
+        background: transparent;
+      }
+
+      .btn-outline:hover {
+        background-color: white;
+        color: var(--primary);
+      }
+
+      .btn-secondary {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #1d4ed8;
+      }
+
+      .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      /* Registration Container */
+      .registration-container {
+        display: flex;
+        min-height: calc(100vh - 80px);
+      }
+
+      .registration-sidebar {
+        width: 400px;
+        background: white;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        padding: 2rem;
+      }
+
+      .registration-progress {
+        margin-bottom: 2rem;
+      }
+
+      .progress-steps {
+        list-style: none;
+      }
+
+      .progress-step {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s;
+      }
+
+      .progress-step.active {
+        background: #dbeafe;
+        color: var(--primary);
+      }
+
+      .progress-step.completed {
+        color: var(--accent);
+      }
+
+      .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-weight: 600;
+      }
+
+      .progress-step.active .step-number {
+        background: var(--primary);
+        color: white;
+      }
+
+      .progress-step.completed .step-number {
+        background: var(--accent);
+        color: white;
+      }
+
+      .step-text {
+        font-weight: 500;
+      }
+
+      .registration-content {
+        flex: 1;
+        padding: 2rem;
+        background: white;
+        margin: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .step-content {
+        display: none;
+      }
+
+      .step-content.active {
+        display: block;
+      }
+
+      .step-title {
+        font-size: 1.8rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+
+      .step-description {
+        color: var(--gray);
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--gray);
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .form-select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--gray);
+        border-radius: 6px;
+        font-size: 1rem;
+        background: white;
+      }
+
+      .location-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: #f8fafc;
+      }
+
+      .location-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .location-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+      }
+
+      .remove-location {
+        background: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .add-location-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 1rem;
+        border: 2px dashed var(--gray);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--gray);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .add-location-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .step-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+      }
+
+      /* Dashboard Styles */
+      .dashboard-layout {
+        display: flex;
+        min-height: calc(100vh - 80px);
+      }
+
+      .sidebar {
+        width: 250px;
+        background: white;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        padding: 2rem 1rem;
+      }
+
+      .sidebar-menu {
+        list-style: none;
+      }
+
+      .sidebar-menu li {
+        margin-bottom: 0.5rem;
+      }
+
+      .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        color: var(--dark);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.3s;
+      }
+
+      .sidebar-menu a:hover,
+      .sidebar-menu a.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .sidebar-menu i {
+        margin-right: 0.8rem;
+        width: 20px;
+        text-align: center;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 2rem;
+      }
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+        color: var(--dark);
+      }
+
+      .welcome-banner {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+      }
+
+      .welcome-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        text-align: center;
+      }
+
+      .stat-card h3 {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .businesses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .business-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+      }
+
+      .business-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .business-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .business-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--dark);
+      }
+
+      .business-type {
+        background: var(--light);
+        color: var(--dark);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .business-locations {
+        margin-top: 1rem;
+      }
+
+      .location-item {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem;
+        background: #f8fafc;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+      }
+
+      .location-icon {
+        width: 30px;
+        height: 30px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.8rem;
+        color: white;
+      }
+
+      .location-info {
+        flex: 1;
+      }
+
+      .location-name {
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+
+      .location-address {
+        font-size: 0.9rem;
+        color: var(--gray);
+      }
+
+      /* Footer */
+      footer {
+        background-color: var(--dark);
+        color: white;
+        padding: 2rem 0 1rem;
+        margin-top: 2rem;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-links {
+        list-style: none;
+      }
+
+      .footer-links li {
+        margin-bottom: 0.8rem;
+      }
+
+      .footer-links a {
+        color: var(--gray);
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: white;
+      }
+
+      .copyright {
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 1px solid #374151;
+        color: var(--gray);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .registration-container {
+          flex-direction: column;
+        }
+
+        .registration-sidebar {
+          width: 100%;
+        }
+
+        .dashboard-layout {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .logo-main {
+          font-size: 1.6rem;
+        }
+
+        .logo-sub {
+          font-size: 0.7rem;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        .businesses-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Success Screen */
+      .success-screen {
+        text-align: center;
+        padding: 3rem 2rem;
+      }
+
+      .success-icon {
+        font-size: 4rem;
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+      }
+
+      .success-title {
+        font-size: 2rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+      }
+
+      .success-message {
+        color: var(--gray);
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container">
+        <nav>
+          <div class="logo">
+            <div class="logo-main">STOCKMASTER</div>
+            <div class="logo-sub">AUTOMATE.TRACK.THRIVE.</div>
+          </div>
+          <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+          <a href="#" class="btn btn-outline">Login</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Registration Container -->
+    <div class="registration-container">
+      <!-- Registration Sidebar -->
+      <div class="registration-sidebar">
+        <div class="registration-progress">
+          <ul class="progress-steps">
+            <li class="progress-step active" data-step="1">
+              <div class="step-number">1</div>
+              <div class="step-text">Account Setup</div>
+            </li>
+            <li class="progress-step" data-step="2">
+              <div class="step-number">2</div>
+              <div class="step-text">Business Information</div>
+            </li>
+            <li class="progress-step" data-step="3">
+              <div class="step-number">3</div>
+              <div class="step-text">Business Locations</div>
+            </li>
+            <li class="progress-step" data-step="4">
+              <div class="step-number">4</div>
+              <div class="step-text">Confirmation</div>
+            </li>
+          </ul>
+        </div>
+
+        <div
+          style="
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+          "
+        >
+          <h3 style="margin-bottom: 0.5rem; color: var(--dark)">
+            Why Register Multiple Locations?
+          </h3>
+          <p style="color: var(--gray); font-size: 0.9rem">
+            Managing multiple stores or warehouses? StockMaster Pro helps you:
+          </p>
+          <ul
+            style="
+              color: var(--gray);
+              font-size: 0.9rem;
+              margin-top: 0.5rem;
+              padding-left: 1.2rem;
+            "
+          >
+            <li>Track inventory across all locations in real-time</li>
+            <li>Optimize stock transfers between locations</li>
+            <li>Generate consolidated reports for all businesses</li>
+            <li>Set location-specific reorder points and alerts</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Registration Content -->
+      <div class="registration-content">
+        <!-- Step 1: Account Setup -->
+        <div class="step-content active" id="step-1">
+          <h2 class="step-title">Create Your Account</h2>
+          <p class="step-description">
+            Set up your administrator account to get started with StockMaster
+            Pro.
+          </p>
+
+          <form id="account-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="first-name">First Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="first-name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="last-name">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="last-name"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address</label>
+              <input type="email" class="form-control" id="email" required />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="confirm-password"
+                  >Confirm Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="confirm-password"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phone">Phone Number</label>
+              <input type="tel" class="form-control" id="phone" />
+            </div>
+          </form>
+
+          <div class="step-actions">
+            <div></div>
+            <!-- Empty div for spacing -->
+            <button class="btn btn-primary" onclick="nextStep(2)">
+              Continue to Business Info
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Business Information -->
+        <div class="step-content" id="step-2">
+          <h2 class="step-title">Business Information</h2>
+          <p class="step-description">
+            Tell us about your primary business. You can add more businesses
+            later.
+          </p>
+
+          <form id="business-form">
+            <div class="form-group">
+              <label class="form-label" for="business-name"
+                >Business Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="business-name"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="business-type"
+                  >Business Type</label
+                >
+                <select class="form-select" id="business-type" required>
+                  <option value="">Select Business Type</option>
+                  <option value="retail">Retail Store</option>
+                  <option value="wholesale">Wholesale/Distribution</option>
+                  <option value="ecommerce">E-commerce</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="restaurant">Restaurant/Food Service</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="industry">Industry</label>
+                <select class="form-select" id="industry" required>
+                  <option value="">Select Industry</option>
+                  <option value="apparel">Apparel & Fashion</option>
+                  <option value="electronics">Electronics</option>
+                  <option value="home-garden">Home & Garden</option>
+                  <option value="health-beauty">Health & Beauty</option>
+                  <option value="sports">Sports & Outdoors</option>
+                  <option value="automotive">Automotive</option>
+                  <option value="food-beverage">Food & Beverage</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="tax-id"
+                >Tax ID / Business Number</label
+              >
+              <input type="text" class="form-control" id="tax-id" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="employee-count"
+                >Number of Employees</label
+              >
+              <select class="form-select" id="employee-count">
+                <option value="1-10">1-10</option>
+                <option value="11-50">11-50</option>
+                <option value="51-200">51-200</option>
+                <option value="201-500">201-500</option>
+                <option value="500+">500+</option>
+              </select>
+            </div>
+          </form>
+
+          <div class="step-actions">
+            <button class="btn btn-secondary" onclick="prevStep(1)">
+              Back
+            </button>
+            <button class="btn btn-primary" onclick="nextStep(3)">
+              Continue to Locations
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Business Locations -->
+        <div class="step-content" id="step-3">
+          <h2 class="step-title">Business Locations</h2>
+          <p class="step-description">
+            Add your business locations. You can add warehouses, retail stores,
+            or other facilities.
+          </p>
+
+          <div id="locations-container">
+            <div class="location-card">
+              <div class="location-header">
+                <div class="location-title">Primary Location</div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="location-name-1"
+                    >Location Name</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="location-name-1"
+                    value="Headquarters"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="location-type-1"
+                    >Location Type</label
+                  >
+                  <select class="form-select" id="location-type-1" required>
+                    <option value="headquarters">Headquarters</option>
+                    <option value="warehouse">Warehouse</option>
+                    <option value="retail-store">Retail Store</option>
+                    <option value="distribution-center">
+                      Distribution Center
+                    </option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="address-1">Address</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="address-1"
+                  required
+                />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="city-1">City</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city-1"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="state-1">State/Province</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="state-1"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="zip-1">ZIP/Postal Code</label>
+                  <input type="text" class="form-control" id="zip-1" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="country-1">Country</label>
+                <select class="form-select" id="country-1" required>
+                  <option value="us">United States</option>
+                  <option value="ca">Canada</option>
+                  <option value="uk">United Kingdom</option>
+                  <option value="au">Australia</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="add-location-btn" onclick="addLocation()">
+            <i class="fas fa-plus"></i> Add Another Location
+          </button>
+
+          <div class="step-actions">
+            <button class="btn btn-secondary" onclick="prevStep(2)">
+              Back
+            </button>
+            <button class="btn btn-primary" onclick="nextStep(4)">
+              Continue to Confirmation
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 4: Confirmation -->
+        <div class="step-content" id="step-4">
+          <h2 class="step-title">Confirmation</h2>
+          <p class="step-description">
+            Review your information before completing registration.
+          </p>
+
+          <div
+            style="
+              background: #f8fafc;
+              padding: 1.5rem;
+              border-radius: 8px;
+              margin-bottom: 1.5rem;
+            "
+          >
+            <h3 style="margin-bottom: 1rem; color: var(--dark)">
+              Account Information
+            </h3>
+            <div id="account-summary"></div>
+          </div>
+
+          <div
+            style="
+              background: #f8fafc;
+              padding: 1.5rem;
+              border-radius: 8px;
+              margin-bottom: 1.5rem;
+            "
+          >
+            <h3 style="margin-bottom: 1rem; color: var(--dark)">
+              Business Information
+            </h3>
+            <div id="business-summary"></div>
+          </div>
+
+          <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px">
+            <h3 style="margin-bottom: 1rem; color: var(--dark)">
+              Location Information
+            </h3>
+            <div id="locations-summary"></div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem">
+            <div style="display: flex; align-items: flex-start">
+              <input
+                type="checkbox"
+                id="terms"
+                style="margin-right: 0.5rem; margin-top: 0.2rem"
+              />
+              <label for="terms" style="font-size: 0.9rem">
+                I agree to the
+                <a href="#" style="color: var(--primary)">Terms of Service</a>
+                and
+                <a href="#" style="color: var(--primary)">Privacy Policy</a>. I
+                understand that StockMaster Pro will process my data in
+                accordance with these policies.
+              </label>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button class="btn btn-secondary" onclick="prevStep(3)">
+              Back
+            </button>
+            <button class="btn btn-primary" onclick="completeRegistration()">
+              Complete Registration
+            </button>
+          </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div class="step-content" id="success-screen">
+          <div class="success-screen">
+            <div class="success-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="success-title">Registration Complete!</h2>
+            <p class="success-message">
+              Thank you for registering with StockMaster. Your account has been
+              created successfully. You can now access your dashboard and start
+              managing your inventory.
+            </p>
+            <button class="btn btn-primary" onclick="goToDashboard()">
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard (Hidden by default) -->
+    <div class="dashboard-layout" id="dashboard" style="display: none">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <ul class="sidebar-menu">
+          <li>
+            <a href="#" class="active"
+              ><i class="fas fa-tachometer-alt"></i> Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-boxes"></i> Inventory</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-bell"></i> Reorder Alerts</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-warehouse"></i> Warehouse</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="page-header">
+          <h1 class="page-title">Business Dashboard</h1>
+          <button class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Business
+          </button>
+        </div>
+
+        <div class="welcome-banner">
+          <h2 class="welcome-title" id="welcome-message">
+            Welcome to StockMaster!
+          </h2>
+          <p>
+            Your centralized hub for managing all your business locations and
+            inventory.
+          </p>
+        </div>
+
+        <div class="dashboard-stats">
+          <div class="stat-card">
+            <h3 id="business-count">1</h3>
+            <p>Businesses</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="location-count">1</h3>
+            <p>Locations</p>
+          </div>
+          <div class="stat-card">
+            <h3>0</h3>
+            <p>Products</p>
+          </div>
+          <div class="stat-card">
+            <h3>0</h3>
+            <p>Active Orders</p>
+          </div>
+        </div>
+
+        <div
+          style="
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+          "
+        >
+          <div class="section-header">
+            <h2 class="section-title">Your Businesses</h2>
+            <button class="btn btn-primary btn-sm">
+              <i class="fas fa-plus"></i> Add Business
+            </button>
+          </div>
+
+          <div class="businesses-grid" id="businesses-grid">
+            <!-- Businesses will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>StockMaster</h3>
+            <p>
+              Advanced inventory management solution for businesses of all
+              sizes.
+            </p>
+            <p style="margin-top: 10px; font-weight: 600">
+              Automate. Track. Thrive.
+            </p>
+          </div>
+
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul class="footer-links">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Features</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="#">Integrations</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h3>Resources</h3>
+            <ul class="footer-links">
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Documentation</a></li>
+              <li><a href="#">Support Center</a></li>
+              <li><a href="#">API Reference</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h3>Contact Us</h3>
+            <ul class="footer-links">
+              <li><i class="fas fa-envelope"></i> info@stockmaster.com</li>
+              <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite
+                100
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="copyright">
+          <p>&copy; 2023 StockMaster. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Registration data storage
+      let registrationData = {
+        account: {},
+        business: {},
+        locations: [],
+      };
+
+      let locationCount = 1;
+
+      // Step navigation
+      function nextStep(step) {
+        // Validate current step before proceeding
+        if (step === 2 && !validateStep1()) return;
+        if (step === 3 && !validateStep2()) return;
+        if (step === 4) {
+          if (!validateStep3()) return;
+          updateSummary();
+        }
+
+        // Hide all steps
+        document.querySelectorAll(".step-content").forEach((step) => {
+          step.classList.remove("active");
+        });
+
+        // Show target step
+        document.getElementById(`step-${step}`).classList.add("active");
+
+        // Update progress steps
+        document.querySelectorAll(".progress-step").forEach((progressStep) => {
+          const stepNum = parseInt(progressStep.getAttribute("data-step"));
+          if (stepNum < step) {
+            progressStep.classList.remove("active");
+            progressStep.classList.add("completed");
+          } else if (stepNum === step) {
+            progressStep.classList.add("active");
+            progressStep.classList.remove("completed");
+          } else {
+            progressStep.classList.remove("active", "completed");
+          }
+        });
+      }
+
+      function prevStep(step) {
+        // Hide all steps
+        document.querySelectorAll(".step-content").forEach((step) => {
+          step.classList.remove("active");
+        });
+
+        // Show target step
+        document.getElementById(`step-${step}`).classList.add("active");
+
+        // Update progress steps
+        document.querySelectorAll(".progress-step").forEach((progressStep) => {
+          const stepNum = parseInt(progressStep.getAttribute("data-step"));
+          if (stepNum < step) {
+            progressStep.classList.remove("active");
+            progressStep.classList.add("completed");
+          } else if (stepNum === step) {
+            progressStep.classList.add("active");
+            progressStep.classList.remove("completed");
+          } else {
+            progressStep.classList.remove("active", "completed");
+          }
+        });
+      }
+
+      // Form validation
+      function validateStep1() {
+        const firstName = document.getElementById("first-name").value;
+        const lastName = document.getElementById("last-name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword =
+          document.getElementById("confirm-password").value;
+
+        if (
+          !firstName ||
+          !lastName ||
+          !email ||
+          !password ||
+          !confirmPassword
+        ) {
+          alert("Please fill in all required fields.");
+          return false;
+        }
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match.");
+          return false;
+        }
+
+        // Save account data
+        registrationData.account = {
+          firstName,
+          lastName,
+          email,
+          password,
+          phone: document.getElementById("phone").value,
+        };
+
+        return true;
+      }
+
+      function validateStep2() {
+        const businessName = document.getElementById("business-name").value;
+        const businessType = document.getElementById("business-type").value;
+        const industry = document.getElementById("industry").value;
+
+        if (!businessName || !businessType || !industry) {
+          alert("Please fill in all required fields.");
+          return false;
+        }
+
+        // Save business data
+        registrationData.business = {
+          name: businessName,
+          type: businessType,
+          industry,
+          taxId: document.getElementById("tax-id").value,
+          employeeCount: document.getElementById("employee-count").value,
+        };
+
+        return true;
+      }
+
+      function validateStep3() {
+        // Validate all locations
+        for (let i = 1; i <= locationCount; i++) {
+          const name = document.getElementById(`location-name-${i}`).value;
+          const type = document.getElementById(`location-type-${i}`).value;
+          const address = document.getElementById(`address-${i}`).value;
+          const city = document.getElementById(`city-${i}`).value;
+          const state = document.getElementById(`state-${i}`).value;
+          const zip = document.getElementById(`zip-${i}`).value;
+          const country = document.getElementById(`country-${i}`).value;
+
+          if (
+            !name ||
+            !type ||
+            !address ||
+            !city ||
+            !state ||
+            !zip ||
+            !country
+          ) {
+            alert(`Please fill in all required fields for location ${i}.`);
+            return false;
+          }
+
+          // Save location data
+          if (i === 1) {
+            registrationData.locations = [];
+          }
+
+          registrationData.locations.push({
+            name,
+            type,
+            address,
+            city,
+            state,
+            zip,
+            country,
+          });
+        }
+
+        return true;
+      }
+
+      // Add new location
+      function addLocation() {
+        locationCount++;
+        const locationsContainer = document.getElementById(
+          "locations-container"
+        );
+
+        const newLocation = document.createElement("div");
+        newLocation.className = "location-card";
+        newLocation.innerHTML = `
+                <div class="location-header">
+                    <div class="location-title">Additional Location</div>
+                    <button type="button" class="remove-location" onclick="removeLocation(${locationCount})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="location-name-${locationCount}">Location Name</label>
+                        <input type="text" class="form-control" id="location-name-${locationCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="location-type-${locationCount}">Location Type</label>
+                        <select class="form-select" id="location-type-${locationCount}" required>
+                            <option value="warehouse">Warehouse</option>
+                            <option value="retail-store">Retail Store</option>
+                            <option value="distribution-center">Distribution Center</option>
+                            <option value="headquarters">Headquarters</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="address-${locationCount}">Address</label>
+                    <input type="text" class="form-control" id="address-${locationCount}" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="city-${locationCount}">City</label>
+                        <input type="text" class="form-control" id="city-${locationCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="state-${locationCount}">State/Province</label>
+                        <input type="text" class="form-control" id="state-${locationCount}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="zip-${locationCount}">ZIP/Postal Code</label>
+                        <input type="text" class="form-control" id="zip-${locationCount}" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="country-${locationCount}">Country</label>
+                    <select class="form-select" id="country-${locationCount}" required>
+                        <option value="us">United States</option>
+                        <option value="ca">Canada</option>
+                        <option value="uk">United Kingdom</option>
+                        <option value="au">Australia</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            `;
+
+        locationsContainer.appendChild(newLocation);
+      }
+
+      // Remove location
+      function removeLocation(locationId) {
+        if (locationCount <= 1) {
+          alert("You must have at least one location.");
+          return;
+        }
+
+        const locationElement = document
+          .querySelector(`#location-name-${locationId}`)
+          .closest(".location-card");
+        locationElement.remove();
+        locationCount--;
+      }
+
+      // Update confirmation summary
+      function updateSummary() {
+        // Account summary
+        const accountSummary = document.getElementById("account-summary");
+        accountSummary.innerHTML = `
+                <p><strong>Name:</strong> ${
+                  registrationData.account.firstName
+                } ${registrationData.account.lastName}</p>
+                <p><strong>Email:</strong> ${registrationData.account.email}</p>
+                <p><strong>Phone:</strong> ${
+                  registrationData.account.phone || "Not provided"
+                }</p>
+            `;
+
+        // Business summary
+        const businessSummary = document.getElementById("business-summary");
+        businessSummary.innerHTML = `
+                <p><strong>Business Name:</strong> ${registrationData.business.name}</p>
+                <p><strong>Business Type:</strong> ${registrationData.business.type}</p>
+                <p><strong>Industry:</strong> ${registrationData.business.industry}</p>
+                <p><strong>Employee Count:</strong> ${registrationData.business.employeeCount}</p>
+            `;
+
+        // Locations summary
+        const locationsSummary = document.getElementById("locations-summary");
+        let locationsHTML = "";
+        registrationData.locations.forEach((location, index) => {
+          locationsHTML += `
+                    <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: ${
+                      index < registrationData.locations.length - 1
+                        ? "1px solid #e5e7eb"
+                        : "none"
+                    };">
+                        <p><strong>${location.name}</strong> (${
+            location.type
+          })</p>
+                        <p>${location.address}, ${location.city}, ${
+            location.state
+          } ${location.zip}, ${location.country}</p>
+                    </div>
+                `;
+        });
+        locationsSummary.innerHTML = locationsHTML;
+      }
+
+      // Complete registration
+      function completeRegistration() {
+        const termsAccepted = document.getElementById("terms").checked;
+
+        if (!termsAccepted) {
+          alert(
+            "Please accept the Terms of Service and Privacy Policy to continue."
+          );
+          return;
+        }
+
+        // In a real application, you would send the registrationData to a server here
+        console.log("Registration data:", registrationData);
+
+        // Show success screen
+        document.querySelectorAll(".step-content").forEach((step) => {
+          step.classList.remove("active");
+        });
+        document.getElementById("success-screen").classList.add("active");
+
+        // Update progress steps
+        document.querySelectorAll(".progress-step").forEach((progressStep) => {
+          progressStep.classList.remove("active");
+          progressStep.classList.add("completed");
+        });
+      }
+
+      // Go to dashboard
+      function goToDashboard() {
+        document.querySelector(".registration-container").style.display =
+          "none";
+        document.getElementById("dashboard").style.display = "flex";
+
+        // Update dashboard with registration data
+        document.getElementById(
+          "welcome-message"
+        ).textContent = `Welcome to StockMaster Pro, ${registrationData.account.firstName}!`;
+        document.getElementById("business-count").textContent = "1";
+        document.getElementById("location-count").textContent =
+          registrationData.locations.length;
+
+        // Populate businesses grid
+        const businessesGrid = document.getElementById("businesses-grid");
+        businessesGrid.innerHTML = `
+                <div class="business-card">
+                    <div class="business-header">
+                        <div class="business-name">${
+                          registrationData.business.name
+                        }</div>
+                        <div class="business-type">${
+                          registrationData.business.type
+                        }</div>
+                    </div>
+                    <p style="color: var(--gray); margin-bottom: 1rem;">${
+                      registrationData.business.industry
+                    } • ${registrationData.business.employeeCount} employees</p>
+                    
+                    <div class="business-locations">
+                        ${registrationData.locations
+                          .map(
+                            (location) => `
+                            <div class="location-item">
+                                <div class="location-icon">
+                                    <i class="fas fa-${getLocationIcon(
+                                      location.type
+                                    )}"></i>
+                                </div>
+                                <div class="location-info">
+                                    <div class="location-name">${
+                                      location.name
+                                    }</div>
+                                    <div class="location-address">${
+                                      location.city
+                                    }, ${location.state}</div>
+                                </div>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem;">
+                        <button class="btn btn-primary btn-sm" style="flex: 1;">Manage Inventory</button>
+                        <button class="btn btn-sm" style="background: var(--light);">Settings</button>
+                    </div>
+                </div>
+            `;
+      }
+
+      // Helper function to get location icon
+      function getLocationIcon(locationType) {
+        switch (locationType) {
+          case "warehouse":
+            return "warehouse";
+          case "retail-store":
+            return "store";
+          case "distribution-center":
+            return "truck";
+          case "headquarters":
+            return "building";
+          default:
+            return "map-marker-alt";
+        }
+      }
+    </script>
+  </body>
+</html>
