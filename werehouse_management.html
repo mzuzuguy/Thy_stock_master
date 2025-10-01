@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockMaster Pro | Warehouse Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #4f46e5;
+            --accent: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #9ca3af;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f4f6;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-main {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        
+        .logo-sub {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            padding: 2rem 1rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        /* Warehouse Dashboard Styles */
+        .warehouse-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .warehouse-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .warehouse-section, .picking-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        /* Warehouse Layout */
+        .warehouse-layout {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .layout-visual {
+            flex: 1;
+            min-height: 500px;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .layout-controls {
+            width: 300px;
+        }
+        
+        .zone {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .zone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .zone-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .zone-stats {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .bins-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .bin {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .bin:hover {
+            transform: scale(1.05);
+        }
+        
+        .bin.empty {
+            background: #f3f4f6;
+            color: var(--gray);
+        }
+        
+        .bin.occupied {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .bin.picking {
+            background: var(--accent);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Warehouse Visualization */
+        .warehouse-visual {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #f8fafc;
+        }
+        
+        .aisle {
+            position: absolute;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        
+        .rack {
+            position: absolute;
+            background: #d1d5db;
+            border: 1px solid #9ca3af;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            box-sizing: border-box;
+        }
+        
+        .rack-bin {
+            width: 25%;
+            height: 25%;
+            border: 1px solid #9ca3af;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .rack-bin:hover {
+            background: #f3f4f6;
+        }
+        
+        .rack-bin.occupied {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .rack-bin.picking {
+            background: var(--accent);
+            color: white;
+        }
+        
+        /* Picking Section */
+        .picking-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .picking-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+        }
+        
+        .picking-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            background: #f8fafc;
+            transition: all 0.3s;
+        }
+        
+        .picking-item.active {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .picking-item.completed {
+            background: #dcfce7;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .picking-order {
+            font-weight: 600;
+            margin-right: 1rem;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .picking-content {
+            flex: 1;
+        }
+        
+        .picking-product {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .picking-location {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .picking-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-active {
+            background: #dbeafe;
+            color: var(--primary);
+        }
+        
+        .status-completed {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .route-visual {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            height: 200px;
+            position: relative;
+        }
+        
+        .route-path {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        
+        .route-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .route-point.start {
+            background: var(--accent);
+        }
+        
+        .route-point.end {
+            background: var(--danger);
+        }
+        
+        /* Bin Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .bin-details {
+            margin-bottom: 1.5rem;
+        }
+        
+        .bin-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-item {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+        
+        .info-value {
+            font-weight: 600;
+        }
+        
+        .bin-products {
+            margin-top: 1.5rem;
+        }
+        
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .products-table th,
+        .products-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .products-table th {
+            background-color: var(--light);
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #374151;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .warehouse-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .warehouse-layout {
+                flex-direction: column;
+            }
+            
+            .layout-controls {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .logo-main {
+                font-size: 1.6rem;
+            }
+            
+            .logo-sub {
+                font-size: 0.7rem;
+            }
+            
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .bins-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .bin-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-main">STOCKMASTER</div>
+                    <div class="logo-sub">AUTOMATE.TRACK.THRIVE.</div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Inventory</a></li>
+                    <li><a href="#">Alerts</a></li>
+                    <li><a href="#" class="active">Warehouse</a></li>
+                    <li><a href="#">Reports</a></li>
+                </ul>
+                <a href="#" class="btn btn-outline">Get Started</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-boxes"></i> Inventory</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> Reorder Alerts</a></li>
+                <li><a href="#" class="active"><i class="fas fa-warehouse"></i> Warehouse</a></li>
+                <li><a href="#"><i class="fas fa-route"></i> Picking Routes</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Warehouse Management</h1>
+                <div>
+                    <button class="btn btn-primary" onclick="openNewOrderModal()">
+                        <i class="fas fa-plus"></i> New Picking Order
+                    </button>
+                </div>
+            </div>
+
+            <!-- Warehouse Statistics -->
+            <div class="warehouse-stats">
+                <div class="stat-card">
+                    <h3>85%</h3>
+                    <p>Storage Utilization</p>
+                </div>
+                <div class="stat-card">
+                    <h3>42</h3>
+                    <p>Active Picking Orders</p>
+                </div>
+                <div class="stat-card">
+                    <h3>12</h3>
+                    <p>Empty Bins</p>
+                </div>
+                <div class="stat-card">
+                    <h3>28 min</h3>
+                    <p>Avg. Picking Time</p>
+                </div>
+            </div>
+
+            <!-- Warehouse Dashboard -->
+            <div class="warehouse-dashboard">
+                <!-- Warehouse Layout Section -->
+                <div class="warehouse-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Warehouse Layout</h2>
+                        <div>
+                            <button class="btn btn-sm" style="background: var(--light); margin-right: 0.5rem;">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-search"></i> Find Bin
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="warehouse-layout">
+                        <div class="layout-visual">
+                            <div class="warehouse-visual">
+                                <!-- Aisles -->
+                                <div class="aisle" style="top: 10%; left: 20%; width: 60%; height: 5%;">Main Aisle</div>
+                                <div class="aisle" style="top: 50%; left: 20%; width: 60%; height: 5%;">Cross Aisle</div>
+                                
+                                <!-- Racks -->
+                                <div class="rack" style="top: 15%; left: 10%; width: 8%; height: 30%;">
+                                    <div class="rack-bin occupied" data-bin="A1">A1</div>
+                                    <div class="rack-bin occupied" data-bin="A2">A2</div>
+                                    <div class="rack-bin occupied" data-bin="A3">A3</div>
+                                    <div class="rack-bin" data-bin="A4">A4</div>
+                                    <div class="rack-bin occupied" data-bin="A5">A5</div>
+                                    <div class="rack-bin" data-bin="A6">A6</div>
+                                    <div class="rack-bin occupied" data-bin="A7">A7</div>
+                                    <div class="rack-bin picking" data-bin="A8">A8</div>
+                                    <div class="rack-bin occupied" data-bin="A9">A9</div>
+                                    <div class="rack-bin" data-bin="A10">A10</div>
+                                    <div class="rack-bin occupied" data-bin="A11">A11</div>
+                                    <div class="rack-bin occupied" data-bin="A12">A12</div>
+                                    <div class="rack-bin" data-bin="A13">A13</div>
+                                    <div class="rack-bin occupied" data-bin="A14">A14</div>
+                                    <div class="rack-bin occupied" data-bin="A15">A15</div>
+                                    <div class="rack-bin" data-bin="A16">A16</div>
+                                </div>
+                                
+                                <div class="rack" style="top: 15%; left: 82%; width: 8%; height: 30%;">
+                                    <div class="rack-bin occupied" data-bin="B1">B1</div>
+                                    <div class="rack-bin occupied" data-bin="B2">B2</div>
+                                    <div class="rack-bin occupied" data-bin="B3">B3</div>
+                                    <div class="rack-bin occupied" data-bin="B4">B4</div>
+                                    <div class="rack-bin" data-bin="B5">B5</div>
+                                    <div class="rack-bin occupied" data-bin="B6">B6</div>
+                                    <div class="rack-bin occupied" data-bin="B7">B7</div>
+                                    <div class="rack-bin occupied" data-bin="B8">B8</div>
+                                    <div class="rack-bin" data-bin="B9">B9</div>
+                                    <div class="rack-bin occupied" data-bin="B10">B10</div>
+                                    <div class="rack-bin occupied" data-bin="B11">B11</div>
+                                    <div class="rack-bin" data-bin="B12">B12</div>
+                                    <div class="rack-bin occupied" data-bin="B13">B13</div>
+                                    <div class="rack-bin occupied" data-bin="B14">B14</div>
+                                    <div class="rack-bin occupied" data-bin="B15">B15</div>
+                                    <div class="rack-bin" data-bin="B16">B16</div>
+                                </div>
+                                
+                                <div class="rack" style="top: 55%; left: 10%; width: 8%; height: 30%;">
+                                    <div class="rack-bin occupied" data-bin="C1">C1</div>
+                                    <div class="rack-bin" data-bin="C2">C2</div>
+                                    <div class="rack-bin occupied" data-bin="C3">C3</div>
+                                    <div class="rack-bin picking" data-bin="C4">C4</div>
+                                    <div class="rack-bin occupied" data-bin="C5">C5</div>
+                                    <div class="rack-bin" data-bin="C6">C6</div>
+                                    <div class="rack-bin occupied" data-bin="C7">C7</div>
+                                    <div class="rack-bin occupied" data-bin="C8">C8</div>
+                                    <div class="rack-bin" data-bin="C9">C9</div>
+                                    <div class="rack-bin occupied" data-bin="C10">C10</div>
+                                    <div class="rack-bin occupied" data-bin="C11">C11</div>
+                                    <div class="rack-bin" data-bin="C12">C12</div>
+                                    <div class="rack-bin occupied" data-bin="C13">C13</div>
+                                    <div class="rack-bin occupied" data-bin="C14">C14</div>
+                                    <div class="rack-bin" data-bin="C15">C15</div>
+                                    <div class="rack-bin occupied" data-bin="C16">C16</div>
+                                </div>
+                                
+                                <div class="rack" style="top: 55%; left: 82%; width: 8%; height: 30%;">
+                                    <div class="rack-bin occupied" data-bin="D1">D1</div>
+                                    <div class="rack-bin occupied" data-bin="D2">D2</div>
+                                    <div class="rack-bin" data-bin="D3">D3</div>
+                                    <div class="rack-bin occupied" data-bin="D4">D4</div>
+                                    <div class="rack-bin occupied" data-bin="D5">D5</div>
+                                    <div class="rack-bin" data-bin="D6">D6</div>
+                                    <div class="rack-bin occupied" data-bin="D7">D7</div>
+                                    <div class="rack-bin occupied" data-bin="D8">D8</div>
+                                    <div class="rack-bin" data-bin="D9">D9</div>
+                                    <div class="rack-bin occupied" data-bin="D10">D10</div>
+                                    <div class="rack-bin occupied" data-bin="D11">D11</div>
+                                    <div class="rack-bin" data-bin="D12">D12</div>
+                                    <div class="rack-bin occupied" data-bin="D13">D13</div>
+                                    <div class="rack-bin occupied" data-bin="D14">D14</div>
+                                    <div class="rack-bin" data-bin="D15">D15</div>
+                                    <div class="rack-bin occupied" data-bin="D16">D16</div>
+                                </div>
+                                
+                                <!-- Route Visualization -->
+                                <div class="route-path" style="top: 20%; left: 50%; width: 2%; height: 30%; transform: translateX(-50%);"></div>
+                                <div class="route-path" style="top: 50%; left: 14%; width: 72%; height: 2%;"></div>
+                                <div class="route-path" style="top: 60%; left: 50%; width: 2%; height: 25%; transform: translateX(-50%);"></div>
+                                
+                                <div class="route-point start" style="top: 20%; left: 50%;"></div>
+                                <div class="route-point" style="top: 20%; left: 14%;"></div>
+                                <div class="route-point" style="top: 20%; left: 86%;"></div>
+                                <div class="route-point" style="top: 60%; left: 14%;"></div>
+                                <div class="route-point end" style="top: 60%; left: 86%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="layout-controls">
+                            <div class="zone">
+                                <div class="zone-header">
+                                    <div class="zone-title">Zone A - Electronics</div>
+                                    <div class="zone-stats">12/16 bins occupied</div>
+                                </div>
+                                <div class="bins-grid">
+                                    <div class="bin occupied" data-bin="A1">A1</div>
+                                    <div class="bin occupied" data-bin="A2">A2</div>
+                                    <div class="bin occupied" data-bin="A3">A3</div>
+                                    <div class="bin empty" data-bin="A4">A4</div>
+                                    <div class="bin occupied" data-bin="A5">A5</div>
+                                    <div class="bin empty" data-bin="A6">A6</div>
+                                    <div class="bin occupied" data-bin="A7">A7</div>
+                                    <div class="bin picking" data-bin="A8">A8</div>
+                                    <div class="bin occupied" data-bin="A9">A9</div>
+                                    <div class="bin empty" data-bin="A10">A10</div>
+                                    <div class="bin occupied" data-bin="A11">A11</div>
+                                    <div class="bin occupied" data-bin="A12">A12</div>
+                                    <div class="bin empty" data-bin="A13">A13</div>
+                                    <div class="bin occupied" data-bin="A14">A14</div>
+                                    <div class="bin occupied" data-bin="A15">A15</div>
+                                    <div class="bin empty" data-bin="A16">A16</div>
+                                </div>
+                            </div>
+
+                            <div class="zone">
+                                <div class="zone-header">
+                                    <div class="zone-title">Zone B - Clothing</div>
+                                    <div class="zone-stats">11/16 bins occupied</div>
+                                </div>
+                                <div class="bins-grid">
+                                    <div class="bin occupied" data-bin="B1">B1</div>
+                                    <div class="bin occupied" data-bin="B2">B2</div>
+                                    <div class="bin occupied" data-bin="B3">B3</div>
+                                    <div class="bin occupied" data-bin="B4">B4</div>
+                                    <div class="bin empty" data-bin="B5">B5</div>
+                                    <div class="bin occupied" data-bin="B6">B6</div>
+                                    <div class="bin occupied" data-bin="B7">B7</div>
+                                    <div class="bin occupied" data-bin="B8">B8</div>
+                                    <div class="bin empty" data-bin="B9">B9</div>
+                                    <div class="bin occupied" data-bin="B10">B10</div>
+                                    <div class="bin occupied" data-bin="B11">B11</div>
+                                    <div class="bin empty" data-bin="B12">B12</div>
+                                    <div class="bin occupied" data-bin="B13">B13</div>
+                                    <div class="bin occupied" data-bin="B14">B14</div>
+                                    <div class="bin occupied" data-bin="B15">B15</div>
+                                    <div class="bin empty" data-bin="B16">B16</div>
+                                </div>
+                            </div>
+
+                            <div class="zone">
+                                <div class="zone-header">
+                                    <div class="zone-title">Zone C - Home & Garden</div>
+                                    <div class="zone-stats">10/16 bins occupied</div>
+                                </div>
+                                <div class="bins-grid">
+                                    <div class="bin occupied" data-bin="C1">C1</div>
+                                    <div class="bin empty" data-bin="C2">C2</div>
+                                    <div class="bin occupied" data-bin="C3">C3</div>
+                                    <div class="bin picking" data-bin="C4">C4</div>
+                                    <div class="bin occupied" data-bin="C5">C5</div>
+                                    <div class="bin empty" data-bin="C6">C6</div>
+                                    <div class="bin occupied" data-bin="C7">C7</div>
+                                    <div class="bin occupied" data-bin="C8">C8</div>
+                                    <div class="bin empty" data-bin="C9">C9</div>
+                                    <div class="bin occupied" data-bin="C10">C10</div>
+                                    <div class="bin occupied" data-bin="C11">C11</div>
+                                    <div class="bin empty" data-bin="C12">C12</div>
+                                    <div class="bin occupied" data-bin="C13">C13</div>
+                                    <div class="bin occupied" data-bin="C14">C14</div>
+                                    <div class="bin empty" data-bin="C15">C15</div>
+                                    <div class="bin occupied" data-bin="C16">C16</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Picking Section -->
+                <div class="picking-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Picking Orders</h2>
+                        <div class="picking-stats">3 Active</div>
+                    </div>
+
+                    <div class="picking-controls">
+                        <button class="btn btn-primary btn-sm" style="flex: 1;">
+                            <i class="fas fa-play"></i> Start Picking
+                        </button>
+                        <button class="btn btn-sm" style="background: var(--light);">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+
+                    <div class="picking-list">
+                        <div class="picking-item active">
+                            <div class="picking-order">1</div>
+                            <div class="picking-content">
+                                <div class="picking-product">Wireless Headphones</div>
+                                <div class="picking-location">Zone A, Bin A8</div>
+                            </div>
+                            <div class="picking-status status-active">Active</div>
+                        </div>
+
+                        <div class="picking-item">
+                            <div class="picking-order">2</div>
+                            <div class="picking-content">
+                                <div class="picking-product">Gardening Tools Set</div>
+                                <div class="picking-location">Zone C, Bin C4</div>
+                            </div>
+                            <div class="picking-status status-pending">Pending</div>
+                        </div>
+
+                        <div class="picking-item">
+                            <div class="picking-order">3</div>
+                            <div class="picking-content">
+                                <div class="picking-product">Bluetooth Speaker</div>
+                                <div class="picking-location">Zone A, Bin A5</div>
+                            </div>
+                            <div class="picking-status status-pending">Pending</div>
+                        </div>
+
+                        <div class="picking-item completed">
+                            <div class="picking-order">4</div>
+                            <div class="picking-content">
+                                <div class="picking-product">Cotton T-Shirt</div>
+                                <div class="picking-location">Zone B, Bin B3</div>
+                            </div>
+                            <div class="picking-status status-completed">Completed</div>
+                        </div>
+
+                        <div class="picking-item completed">
+                            <div class="picking-order">5</div>
+                            <div class="picking-content">
+                                <div class="picking-product">Stainless Steel Bottle</div>
+                                <div class="picking-location">Zone C, Bin C11</div>
+                            </div>
+                            <div class="picking-status status-completed">Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="route-visual">
+                        <h4>Optimized Picking Route</h4>
+                        <div style="position: relative; height: 140px; background: #f8fafc; border-radius: 6px; margin-top: 0.5rem;">
+                            <!-- Simplified route visualization -->
+                            <div style="position: absolute; top: 20%; left: 10%; width: 80%; height: 2%; background: var(--accent);"></div>
+                            <div style="position: absolute; top: 50%; left: 10%; width: 2%; height: 30%; background: var(--accent);"></div>
+                            <div style="position: absolute; top: 50%; left: 50%; width: 40%; height: 2%; background: var(--accent);"></div>
+                            <div style="position: absolute; top: 70%; left: 50%; width: 2%; height: 20%; background: var(--accent);"></div>
+                            
+                            <div style="position: absolute; top: 20%; left: 10%; width: 10px; height: 10px; background: var(--accent); border-radius: 50%;"></div>
+                            <div style="position: absolute; top: 20%; left: 50%; width: 10px; height: 10px; background: var(--primary); border-radius: 50%;"></div>
+                            <div style="position: absolute; top: 20%; left: 90%; width: 10px; height: 10px; background: var(--primary); border-radius: 50%;"></div>
+                            <div style="position: absolute; top: 70%; left: 10%; width: 10px; height: 10px; background: var(--primary); border-radius: 50%;"></div>
+                            <div style="position: absolute; top: 70%; left: 90%; width: 10px; height: 10px; background: var(--danger); border-radius: 50%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--gray);">Estimated Time</div>
+                            <div style="font-weight: 600;">12 minutes</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--gray);">Distance</div>
+                            <div style="font-weight: 600;">245 meters</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bin Details Modal -->
+    <div class="modal" id="bin-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bin-modal-title">Bin Details</h2>
+                <button class="close-modal" onclick="closeBinModal()">&times;</button>
+            </div>
+            <div class="bin-details">
+                <div class="bin-info">
+                    <div class="info-item">
+                        <div class="info-label">Bin Location</div>
+                        <div class="info-value" id="bin-location">A1</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Zone</div>
+                        <div class="info-value" id="bin-zone">A - Electronics</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value" id="bin-status">Occupied</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Capacity</div>
+                        <div class="info-value" id="bin-capacity">24/30 units</div>
+                    </div>
+                </div>
+
+                <div class="bin-products">
+                    <h3>Products in Bin</h3>
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>SKU</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bin-products-list">
+                            <!-- Products will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button class="btn btn-primary" style="flex: 1;">Move Products</button>
+                <button class="btn" style="background: var(--light);">Print Label</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>StockMaster</h3>
+                    <p>Advanced inventory management solution for businesses of all sizes.</p>
+                    <p style="margin-top: 10px; font-weight: 600;">Automate. Track. Thrive.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Integrations</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">API Reference</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> info@stockmaster.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 100</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 StockMaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample bin data
+        const binData = {
+            'A1': {
+                zone: 'A - Electronics',
+                status: 'Occupied',
+                capacity: '24/30 units',
+                products: [
+                    { name: 'Wireless Headphones', sku: 'WH-2023', quantity: 12 },
+                    { name: 'Bluetooth Speaker', sku: 'BS-4567', quantity: 12 }
+                ]
+            },
+            'A8': {
+                zone: 'A - Electronics',
+                status: 'Picking',
+                capacity: '18/30 units',
+                products: [
+                    { name: 'Wireless Headphones', sku: 'WH-2023', quantity: 18 }
+                ]
+            },
+            'C4': {
+                zone: 'C - Home & Garden',
+                status: 'Picking',
+                capacity: '15/30 units',
+                products: [
+                    { name: 'Gardening Tools Set', sku: 'GT-3345', quantity: 15 }
+                ]
+            },
+            'B3': {
+                zone: 'B - Clothing',
+                status: 'Occupied',
+                capacity: '28/30 units',
+                products: [
+                    { name: 'Cotton T-Shirt', sku: 'CT-7890', quantity: 28 }
+                ]
+            }
+        };
+
+        // Modal functions
+        function openBinModal(binId) {
+            const bin = binData[binId] || {
+                zone: 'Unknown',
+                status: 'Empty',
+                capacity: '0/30 units',
+                products: []
+            };
+            
+            document.getElementById('bin-modal').style.display = 'flex';
+            document.getElementById('bin-modal-title').textContent = `Bin ${binId} Details`;
+            document.getElementById('bin-location').textContent = binId;
+            document.getElementById('bin-zone').textContent = bin.zone;
+            document.getElementById('bin-status').textContent = bin.status;
+            document.getElementById('bin-capacity').textContent = bin.capacity;
+            
+            // Populate products table
+            const productsList = document.getElementById('bin-products-list');
+            productsList.innerHTML = '';
+            
+            if (bin.products.length > 0) {
+                bin.products.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>${product.sku}</td>
+                        <td>${product.quantity}</td>
+                    `;
+                    productsList.appendChild(row);
+                });
+            } else {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="3" style="text-align: center; color: var(--gray);">No products in this bin</td>
+                `;
+                productsList.appendChild(row);
+            }
+        }
+
+        function closeBinModal() {
+            document.getElementById('bin-modal').style.display = 'none';
+        }
+
+        function openNewOrderModal() {
+            alert('New picking order functionality would open here');
+            // In a real application, this would open a modal to create a new picking order
+        }
+
+        // Add click event listeners to bins
+        document.addEventListener('DOMContentLoaded', function() {
+            const bins = document.querySelectorAll('.bin, .rack-bin');
+            bins.forEach(bin => {
+                bin.addEventListener('click', function() {
+                    const binId = this.getAttribute('data-bin');
+                    openBinModal(binId);
+                });
+            });
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('bin-modal');
+            if (event.target === modal) {
+                closeBinModal();
+            }
+        }
+
+        // Simulate real-time warehouse updates
+        function simulateWarehouseUpdate() {
+            // Randomly update bin status to simulate real-time changes
+            const bins = document.querySelectorAll('.bin, .rack-bin');
+            const randomBin = bins[Math.floor(Math.random() * bins.length)];
+            
+            if (randomBin.classList.contains('occupied')) {
+                randomBin.classList.remove('occupied');
+                randomBin.classList.add('empty');
+            } else if (randomBin.classList.contains('empty')) {
+                randomBin.classList.remove('empty');
+                randomBin.classList.add('occupied');
+            }
+            
+            // Update statistics occasionally
+            if (Math.random() < 0.1) {
+                const stats = document.querySelectorAll('.stat-card h3');
+                const utilizationStat = stats[0];
+                const currentUtilization = parseInt(utilizationStat.textContent);
+                const newUtilization = Math.min(100, Math.max(70, currentUtilization + (Math.random() < 0.5 ? 1 : -1)));
+                utilizationStat.textContent = `${newUtilization}%`;
+            }
+        }
+
+        // Update warehouse every 10 seconds to simulate real-time changes
+        setInterval(simulateWarehouseUpdate, 10000);
+    </script>
+</body>
+</html>

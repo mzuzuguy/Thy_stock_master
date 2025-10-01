@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockMaster Pro | Analytics & Reporting</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #4f46e5;
+            --accent: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #9ca3af;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f4f6;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-main {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        
+        .logo-sub {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            padding: 2rem 1rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        /* Analytics Dashboard Styles */
+        .analytics-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .trend {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+        
+        .trend.up {
+            color: var(--accent);
+        }
+        
+        .trend.down {
+            color: var(--danger);
+        }
+        
+        .analytics-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .analytics-section, .ai-forecasting {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-control {
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .chart-control.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Reports Section */
+        .reports-section {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .report-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .report-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .report-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .report-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-desc {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        /* AI Forecasting Section */
+        .forecasting-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .forecast-card {
+            background: #f0f9ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .forecast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .forecast-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .forecast-accuracy {
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .forecast-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .forecast-item {
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .forecast-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.3rem;
+        }
+        
+        .forecast-value {
+            font-weight: 600;
+        }
+        
+        .ai-insights {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #fef7cd;
+            border-radius: 8px;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .insight-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .insight-header i {
+            color: var(--warning);
+            margin-right: 0.5rem;
+        }
+        
+        .insight-title {
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 0 1rem;
+            margin-top: 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #374151;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .analytics-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .logo-main {
+                font-size: 1.6rem;
+            }
+            
+            .logo-sub {
+                font-size: 0.7rem;
+            }
+            
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .forecast-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-main">STOCKMASTER</div>
+                    <div class="logo-sub">AUTOMATE.TRACK.THRIVE.</div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Inventory</a></li>
+                    <li><a href="#">Alerts</a></li>
+                    <li><a href="#">Warehouse</a></li>
+                    <li><a href="#" class="active">Analytics</a></li>
+                </ul>
+                <a href="#" class="btn btn-outline">Get Started</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-boxes"></i> Inventory</a></li>
+                <li><a href="#"><i class="fas fa-bell"></i> Reorder Alerts</a></li>
+                <li><a href="#"><i class="fas fa-warehouse"></i> Warehouse</a></li>
+                <li><a href="#" class="active"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-robot"></i> AI Forecasting</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Analytics & Reporting</h1>
+                <div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i> Export Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analytics Statistics -->
+            <div class="analytics-stats">
+                <div class="stat-card">
+                    <h3>$86,542</h3>
+                    <p>Total Sales</p>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 12.5% vs last month
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>4.2</h3>
+                    <p>Inventory Turnover</p>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 8.3% improvement
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>2.1%</h3>
+                    <p>Stockout Rate</p>
+                    <div class="trend down">
+                        <i class="fas fa-arrow-down"></i> 15% reduction
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3>94.7%</h3>
+                    <p>Forecast Accuracy</p>
+                    <div class="trend up">
+                        <i class="fas fa-arrow-up"></i> 3.2% improvement
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Dashboard -->
+            <div class="analytics-dashboard">
+                <!-- Analytics Section -->
+                <div class="analytics-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Sales & Inventory Analytics</h2>
+                        <div class="chart-controls">
+                            <button class="chart-control active">7 Days</button>
+                            <button class="chart-control">30 Days</button>
+                            <button class="chart-control">90 Days</button>
+                            <button class="chart-control">1 Year</button>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="salesTrendChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="inventoryTurnoverChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="productPerformanceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- AI Forecasting Section -->
+                <div class="ai-forecasting">
+                    <div class="section-header">
+                        <h2 class="section-title">AI Demand Forecasting</h2>
+                        <div class="forecast-accuracy">94.7% Accuracy</div>
+                    </div>
+
+                    <div class="forecasting-controls">
+                        <button class="btn btn-primary btn-sm" style="flex: 1;">
+                            <i class="fas fa-sync-alt"></i> Update Forecast
+                        </button>
+                        <button class="btn btn-sm" style="background: var(--light);">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="demandForecastChart"></canvas>
+                    </div>
+
+                    <div class="forecast-card">
+                        <div class="forecast-header">
+                            <div class="forecast-title">Wireless Headphones</div>
+                            <div class="forecast-accuracy">96% Accuracy</div>
+                        </div>
+                        <div class="forecast-details">
+                            <div class="forecast-item">
+                                <div class="forecast-label">Predicted Demand</div>
+                                <div class="forecast-value">245 units/week</div>
+                            </div>
+                            <div class="forecast-item">
+                                <div class="forecast-label">Recommended Stock</div>
+                                <div class="forecast-value">280 units</div>
+                            </div>
+                            <div class="forecast-item">
+                                <div class="forecast-label">Current Stock</div>
+                                <div class="forecast-value">312 units</div>
+                            </div>
+                            <div class="forecast-item">
+                                <div class="forecast-label">Status</div>
+                                <div class="forecast-value" style="color: var(--warning);">Slight Overstock</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="forecast-card">
+                        <div class="forecast-header">
+                            <div class="forecast-title">Cotton T-Shirts</div>
+                            <div class="forecast-accuracy">92% Accuracy</div>
+                        </div>
+                        <div class="forecast-details">
+                            <div class="forecast-item">
+                                <div class="forecast-label">Predicted Demand</div>
+                                <div class="forecast-value">180 units/week</div>
+                            </div>
+                            <div class="forecast-item">
+                                <div class="forecast-label">Recommended Stock</div>
+                                <div class="forecast-value">210 units</div>
+                            </div>
+                            <div class="forecast-item">
+                                <div class="forecast-label">Current Stock</div>
+                                <div class="forecast-value">85 units</div>
+                            </div>
+                            <div class="forecast-item">
+                                <div class="forecast-label">Status</div>
+                                <div class="forecast-value" style="color: var(--danger);">Risk of Stockout</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-insights">
+                        <div class="insight-header">
+                            <i class="fas fa-lightbulb"></i>
+                            <div class="insight-title">AI Insight</div>
+                        </div>
+                        <p>Based on seasonal trends and market analysis, we predict a 15% increase in demand for electronics next month. Consider increasing stock levels for wireless headphones and Bluetooth speakers.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section -->
+            <div class="reports-section">
+                <div class="section-header">
+                    <h2 class="section-title">Reports & Exports</h2>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Generate Custom Report
+                    </button>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="report-title">Sales Performance Report</div>
+                        <div class="report-desc">Detailed analysis of sales trends, top-performing products, and revenue metrics.</div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary btn-sm">View</button>
+                            <button class="btn btn-sm" style="background: var(--light);">PDF</button>
+                            <button class="btn btn-sm" style="background: var(--light);">Excel</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div class="report-title">Inventory Health Report</div>
+                        <div class="report-desc">Comprehensive overview of inventory levels, turnover rates, and stockout risks.</div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary btn-sm">View</button>
+                            <button class="btn btn-sm" style="background: var(--light);">PDF</button>
+                            <button class="btn btn-sm" style="background: var(--light);">Excel</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="report-title">AI Forecasting Report</div>
+                        <div class="report-desc">Demand predictions, forecast accuracy, and inventory optimization recommendations.</div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary btn-sm">View</button>
+                            <button class="btn btn-sm" style="background: var(--light);">PDF</button>
+                            <button class="btn btn-sm" style="background: var(--light);">Excel</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="report-title">Multi-Store Performance</div>
+                        <div class="report-desc">Comparative analysis of sales and inventory across all store locations.</div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary btn-sm">View</button>
+                            <button class="btn btn-sm" style="background: var(--light);">PDF</button>
+                            <button class="btn btn-sm" style="background: var(--light);">Excel</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="report-title">Supplier Performance</div>
+                        <div class="report-desc">Analysis of supplier reliability, lead times, and product quality metrics.</div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary btn-sm">View</button>
+                            <button class="btn btn-sm" style="background: var(--light);">PDF</button>
+                            <button class="btn btn-sm" style="background: var(--light);">Excel</button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="report-title">Financial Summary</div>
+                        <div class="report-desc">Revenue, costs, profit margins, and ROI analysis for inventory management.</div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary btn-sm">View</button>
+                            <button class="btn btn-sm" style="background: var(--light);">PDF</button>
+                            <button class="btn btn-sm" style="background: var(--light);">Excel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>StockMaster</h3>
+                    <p>Advanced inventory management solution for businesses of all sizes.</p>
+                    <p style="margin-top: 10px; font-weight: 600;">Automate. Track. Thrive.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Integrations</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">API Reference</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> info@stockmaster.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 100</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 StockMaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sales Trend Chart
+            const salesCtx = document.getElementById('salesTrendChart').getContext('2d');
+            const salesTrendChart = new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Sales Revenue',
+                        data: [65000, 72000, 68000, 81000, 75000, 89000, 92000, 86000, 94000, 98000, 102000, 108000],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Units Sold',
+                        data: [1250, 1380, 1320, 1560, 1450, 1720, 1850, 1680, 1920, 2050, 2180, 2350],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Monthly Sales Trends',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Revenue ($) / Units'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Inventory Turnover Chart
+            const turnoverCtx = document.getElementById('inventoryTurnoverChart').getContext('2d');
+            const inventoryTurnoverChart = new Chart(turnoverCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Electronics', 'Clothing', 'Home & Garden', 'Kitchen', 'Sports', 'Toys'],
+                    datasets: [{
+                        label: 'Inventory Turnover Ratio',
+                        data: [5.2, 3.8, 4.1, 3.5, 2.9, 4.7],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.7)',
+                            'rgba(34, 197, 94, 0.7)',
+                            'rgba(245, 158, 11, 0.7)',
+                            'rgba(239, 68, 68, 0.7)',
+                            'rgba(139, 92, 246, 0.7)',
+                            'rgba(14, 165, 233, 0.7)'
+                        ],
+                        borderColor: [
+                            '#2563eb',
+                            '#22c55e',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6',
+                            '#0ea5e9'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Inventory Turnover by Category',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Turnover Ratio'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Product Performance Chart
+            const performanceCtx = document.getElementById('productPerformanceChart').getContext('2d');
+            const productPerformanceChart = new Chart(performanceCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wireless Headphones', 'Bluetooth Speaker', 'Cotton T-Shirt', 'Gardening Tools', 'Water Bottle', 'Other'],
+                    datasets: [{
+                        data: [28, 22, 18, 12, 10, 10],
+                        backgroundColor: [
+                            '#2563eb',
+                            '#22c55e',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6',
+                            '#94a3b8'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Product Performance by Revenue Share',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+
+            // Demand Forecast Chart
+            const forecastCtx = document.getElementById('demandForecastChart').getContext('2d');
+            const demandForecastChart = new Chart(forecastCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+                    datasets: [{
+                        label: 'Historical Demand',
+                        data: [210, 195, 230, 245, 220, 260, 240, null],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.4
+                    }, {
+                        label: 'AI Forecast',
+                        data: [null, null, null, null, null, 255, 265, 275],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.4
+                    }, {
+                        label: 'Confidence Interval',
+                        data: [null, null, null, null, null, 240, 250, 260, 290, 300, 310],
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderWidth: 0,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'AI Demand Forecasting - Wireless Headphones',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Units Demanded'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Add interactivity to chart controls
+            const chartControls = document.querySelectorAll('.chart-control');
+            chartControls.forEach(control => {
+                control.addEventListener('click', function() {
+                    chartControls.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // In a real app, this would update the chart data based on the selected time period
+                    console.log(`Time period changed to: ${this.textContent}`);
+                });
+            });
+        });
+
+        // Simulate real-time data updates
+        function updateChartData() {
+            // In a real application, this would fetch new data from an API
+            // For this demo, we'll just log that an update occurred
+            console.log('Chart data updated with latest analytics');
+        }
+
+        // Update charts every 30 seconds to simulate real-time data
+        setInterval(updateChartData, 30000);
+    </script>
+</body>
+</html>

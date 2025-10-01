@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockMaster Pro | Reorder Alert Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #4f46e5;
+            --accent: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #9ca3af;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f4f6;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-main {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        
+        .logo-sub {
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            color: var(--accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            padding: 2rem 1rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        /* Alert Dashboard Styles */
+        .alert-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .stat-card.critical {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .stat-card.warning {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .stat-card.info {
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+        
+        .alert-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .alerts-section, .reorder-config {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .alert-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .alerts-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s;
+        }
+        
+        .alert-item.critical {
+            background: #fef2f2;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .alert-item.warning {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .alert-item.info {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .alert-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .alert-icon.critical {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .alert-icon.warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .alert-icon.info {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .alert-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .alert-time {
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        .alert-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        
+        .products-table th,
+        .products-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .products-table th {
+            background-color: var(--light);
+            font-weight: 600;
+        }
+        
+        .stock-low {
+            color: var(--danger);
+            font-weight: 600;
+        }
+        
+        .stock-medium {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        .stock-ok {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .reorder-form {
+            margin-top: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--gray);
+            border-radius: 6px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .notification-settings {
+            margin-top: 2rem;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #374151;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .logo-main {
+                font-size: 1.6rem;
+            }
+            
+            .logo-sub {
+                font-size: 0.7rem;
+            }
+            
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .alert-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-main">STOCKMASTER</div>
+                    <div class="logo-sub">AUTOMATE.TRACK.THRIVE.</div>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Inventory</a></li>
+                    <li><a href="#" class="active">Alerts</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+                <a href="#" class="btn btn-outline">Get Started</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#"><i class="fas fa-boxes"></i> Inventory</a></li>
+                <li><a href="#" class="active"><i class="fas fa-bell"></i> Reorder Alerts</a></li>
+                <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
+                <li><a href="#"><i class="fas fa-store"></i> Multi-Store</a></li>
+                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Reorder Alert Dashboard</h1>
+                <button class="btn btn-primary" onclick="openReorderModal()">
+                    <i class="fas fa-plus"></i> Set Reorder Point
+                </button>
+            </div>
+
+            <!-- Alert Statistics -->
+            <div class="alert-stats">
+                <div class="stat-card critical">
+                    <h3>8</h3>
+                    <p>Critical Alerts</p>
+                </div>
+                <div class="stat-card warning">
+                    <h3>12</h3>
+                    <p>Warning Alerts</p>
+                </div>
+                <div class="stat-card info">
+                    <h3>5</h3>
+                    <p>Products to Reorder</p>
+                </div>
+                <div class="stat-card">
+                    <h3>42</h3>
+                    <p>Total Products</p>
+                </div>
+            </div>
+
+            <!-- Alert Dashboard -->
+            <div class="alert-dashboard">
+                <!-- Alerts Section -->
+                <div class="alerts-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Active Alerts</h2>
+                        <div class="alert-filters">
+                            <button class="filter-btn active" onclick="filterAlerts('all')">All</button>
+                            <button class="filter-btn" onclick="filterAlerts('critical')">Critical</button>
+                            <button class="filter-btn" onclick="filterAlerts('warning')">Warning</button>
+                        </div>
+                    </div>
+
+                    <div class="alerts-list" id="alerts-list">
+                        <!-- Critical Alert -->
+                        <div class="alert-item critical">
+                            <div class="alert-icon critical">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Wireless Headphones - Critical Stock</div>
+                                <div class="alert-desc">Stock level (12) is below reorder point (20)</div>
+                                <div class="alert-time">2 hours ago</div>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="btn btn-primary btn-sm" onclick="reorderProduct('WH-2023')">Reorder</button>
+                                <button class="btn btn-sm" style="background: var(--light);">Dismiss</button>
+                            </div>
+                        </div>
+
+                        <!-- Warning Alert -->
+                        <div class="alert-item warning">
+                            <div class="alert-icon warning">
+                                <i class="fas fa-exclamation-circle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Cotton T-Shirt - Low Stock</div>
+                                <div class="alert-desc">Stock level (8) is approaching reorder point (25)</div>
+                                <div class="alert-time">5 hours ago</div>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="btn btn-primary btn-sm" onclick="reorderProduct('CT-7890')">Reorder</button>
+                                <button class="btn btn-sm" style="background: var(--light);">Dismiss</button>
+                            </div>
+                        </div>
+
+                        <!-- Info Alert -->
+                        <div class="alert-item info">
+                            <div class="alert-icon info">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Bluetooth Speaker - Stock Update</div>
+                                <div class="alert-desc">Stock level updated to 45 units</div>
+                                <div class="alert-time">1 day ago</div>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="btn btn-sm" style="background: var(--light);">Dismiss</button>
+                            </div>
+                        </div>
+
+                        <!-- Critical Alert -->
+                        <div class="alert-item critical">
+                            <div class="alert-icon critical">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-title">Stainless Steel Water Bottle - Critical Stock</div>
+                                <div class="alert-desc">Stock level (5) is below reorder point (15)</div>
+                                <div class="alert-time">1 day ago</div>
+                            </div>
+                            <div class="alert-actions">
+                                <button class="btn btn-primary btn-sm" onclick="reorderProduct('WB-9012')">Reorder</button>
+                                <button class="btn btn-sm" style="background: var(--light);">Dismiss</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reorder Configuration -->
+                <div class="reorder-config">
+                    <div class="section-header">
+                        <h2 class="section-title">Reorder Settings</h2>
+                    </div>
+
+                    <div class="products-table-container">
+                        <table class="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Current Stock</th>
+                                    <th>Reorder Point</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Wireless Headphones</td>
+                                    <td class="stock-low">12</td>
+                                    <td>20</td>
+                                    <td><span style="color: var(--danger);">Critical</span></td>
+                                    <td><button class="btn btn-primary btn-sm" onclick="editReorderPoint('WH-2023', 20)">Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Bluetooth Speaker</td>
+                                    <td class="stock-ok">45</td>
+                                    <td>15</td>
+                                    <td><span style="color: var(--accent);">Good</span></td>
+                                    <td><button class="btn btn-primary btn-sm" onclick="editReorderPoint('BS-4567', 15)">Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Cotton T-Shirt</td>
+                                    <td class="stock-low">8</td>
+                                    <td>25</td>
+                                    <td><span style="color: var(--danger);">Critical</span></td>
+                                    <td><button class="btn btn-primary btn-sm" onclick="editReorderPoint('CT-7890', 25)">Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Gardening Tools Set</td>
+                                    <td class="stock-ok">32</td>
+                                    <td>10</td>
+                                    <td><span style="color: var(--accent);">Good</span></td>
+                                    <td><button class="btn btn-primary btn-sm" onclick="editReorderPoint('GT-3345', 10)">Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Stainless Steel Water Bottle</td>
+                                    <td class="stock-low">5</td>
+                                    <td>15</td>
+                                    <td><span style="color: var(--danger);">Critical</span></td>
+                                    <td><button class="btn btn-primary btn-sm" onclick="editReorderPoint('WB-9012', 15)">Edit</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="notification-settings">
+                        <h3>Alert Preferences</h3>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-title">Email Notifications</div>
+                                <div class="setting-desc">Receive alerts via email</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-title">Push Notifications</div>
+                                <div class="setting-desc">Receive alerts on your devices</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div>
+                                <div class="setting-title">Auto Reorder</div>
+                                <div class="setting-desc">Automatically create purchase orders</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reorder Point Modal -->
+    <div class="modal" id="reorder-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Set Reorder Point</h2>
+                <button class="close-modal" onclick="closeReorderModal()">&times;</button>
+            </div>
+            <div class="reorder-form">
+                <div class="form-group">
+                    <label for="product-select">Product</label>
+                    <select class="form-control" id="product-select">
+                        <option value="">Select a product</option>
+                        <option value="WH-2023">Wireless Headphones</option>
+                        <option value="BS-4567">Bluetooth Speaker</option>
+                        <option value="CT-7890">Cotton T-Shirt</option>
+                        <option value="GT-3345">Gardening Tools Set</option>
+                        <option value="WB-9012">Stainless Steel Water Bottle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reorder-point">Reorder Point</label>
+                    <input type="number" class="form-control" id="reorder-point" placeholder="Enter reorder point">
+                </div>
+                <div class="form-group">
+                    <label for="auto-reorder">Auto Reorder Quantity</label>
+                    <input type="number" class="form-control" id="auto-reorder" placeholder="Enter quantity to reorder">
+                </div>
+                <div class="form-group">
+                    <label for="supplier">Preferred Supplier</label>
+                    <select class="form-control" id="supplier">
+                        <option value="">Select supplier</option>
+                        <option value="supplier1">Tech Supplies Inc.</option>
+                        <option value="supplier2">Fashion Distributors</option>
+                        <option value="supplier3">Home & Garden Wholesale</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="saveReorderPoint()">Save Reorder Point</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>StockMaster</h3>
+                    <p>Advanced inventory management solution for businesses of all sizes.</p>
+                    <p style="margin-top: 10px; font-weight: 600;">Automate. Track. Thrive.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Integrations</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Support Center</a></li>
+                        <li><a href="#">API Reference</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> info@stockmaster.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Business Ave, Suite 100</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 StockMaster. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Product database with reorder points
+        const products = [
+            { name: "Wireless Headphones", sku: "WH-2023", category: "Electronics", stock: 12, reorder: 20 },
+            { name: "Bluetooth Speaker", sku: "BS-4567", category: "Electronics", stock: 45, reorder: 15 },
+            { name: "Cotton T-Shirt", sku: "CT-7890", category: "Clothing", stock: 8, reorder: 25 },
+            { name: "Gardening Tools Set", sku: "GT-3345", category: "Home & Garden", stock: 32, reorder: 10 },
+            { name: "Stainless Steel Water Bottle", sku: "WB-9012", category: "Kitchen", stock: 5, reorder: 15 }
+        ];
+
+        // Modal functions
+        function openReorderModal() {
+            document.getElementById('reorder-modal').style.display = 'flex';
+            document.getElementById('modal-title').textContent = 'Set Reorder Point';
+            // Reset form
+            document.getElementById('product-select').value = '';
+            document.getElementById('reorder-point').value = '';
+            document.getElementById('auto-reorder').value = '';
+            document.getElementById('supplier').value = '';
+        }
+
+        function closeReorderModal() {
+            document.getElementById('reorder-modal').style.display = 'none';
+        }
+
+        function editReorderPoint(sku, currentReorder) {
+            document.getElementById('reorder-modal').style.display = 'flex';
+            document.getElementById('modal-title').textContent = 'Edit Reorder Point';
+            document.getElementById('product-select').value = sku;
+            document.getElementById('reorder-point').value = currentReorder;
+        }
+
+        function saveReorderPoint() {
+            const productSku = document.getElementById('product-select').value;
+            const reorderPoint = document.getElementById('reorder-point').value;
+            
+            if (!productSku || !reorderPoint) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Update product in database
+            const product = products.find(p => p.sku === productSku);
+            if (product) {
+                product.reorder = parseInt(reorderPoint);
+                
+                // Update UI
+                updateProductTable();
+                updateAlerts();
+                
+                // Show success message
+                alert(`Reorder point for ${product.name} set to ${reorderPoint}`);
+            }
+            
+            closeReorderModal();
+        }
+
+        function reorderProduct(sku) {
+            const product = products.find(p => p.sku === sku);
+            if (product) {
+                alert(`Purchase order created for ${product.name}`);
+                // In a real app, this would create an actual purchase order
+            }
+        }
+
+        function filterAlerts(type) {
+            const alerts = document.querySelectorAll('.alert-item');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Update active filter button
+            filterButtons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(type)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Show/hide alerts based on filter
+            alerts.forEach(alert => {
+                if (type === 'all') {
+                    alert.style.display = 'flex';
+                } else if (alert.classList.contains(type)) {
+                    alert.style.display = 'flex';
+                } else {
+                    alert.style.display = 'none';
+                }
+            });
+        }
+
+        function updateProductTable() {
+            // This would update the product table with new reorder points
+            // For demo purposes, we'll just log the update
+            console.log('Product table updated with new reorder points');
+        }
+
+        function updateAlerts() {
+            // This would recalculate and update alerts based on new reorder points
+            // For demo purposes, we'll just log the update
+            console.log('Alerts updated based on new reorder points');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('reorder-modal');
+            if (event.target === modal) {
+                closeReorderModal();
+            }
+        }
+
+        // Simulate real-time alert updates
+        function simulateAlertUpdate() {
+            // Randomly update stock levels to trigger alerts
+            const randomProduct = products[Math.floor(Math.random() * products.length)];
+            const change = Math.floor(Math.random() * 10) - 5; // -5 to +5
+            randomProduct.stock += change;
+            
+            // Ensure stock doesn't go negative
+            if (randomProduct.stock < 0) randomProduct.stock = 0;
+            
+            // Update UI to reflect changes
+            updateProductTable();
+            updateAlerts();
+            
+            // Log the change
+            console.log(`${randomProduct.name} stock updated to ${randomProduct.stock}`);
+        }
+
+        // Update stock levels every 30 seconds to simulate real-time changes
+        setInterval(simulateAlertUpdate, 30000);
+    </script>
+</body>
+</html>
